@@ -1,6 +1,55 @@
 {% extends 'base.html' %}
 
 {% block header %}
+<script language="JavaScript">
+
+    pList= [
+    {% for spkg in spkgs[:-1] %}' <a href="{{spkg.url}}">{{spkg.name}}</a>',
+    {% endfor %}' <a href="{{spkgs[-1].url}}">{{spkgs[-1].name}}</a>'];
+
+    var listpkgInnerHTML;
+
+    function shuffle(a) {
+        var j, x, i;
+        for (i = a.length - 1; i > 0; i--) {
+            j = Math.floor(Math.random() * (i + 1));
+            x = a[i];
+            a[i] = a[j];
+            a[j] = x;
+        }
+        return a;
+    }
+
+    function randomizePkgOrder() {
+        /*
+            Randomize the display order for the packages of the scrolling list.
+         */
+        pList = shuffle(pList);
+        pList = pList.slice(0, 8);
+        listpkgInnerHTML = pList.toString();
+    }
+
+    //launch the randomize as soon as possible
+    randomizePkgOrder();
+
+    //wait for the dom content to be loaded.
+    var pkgListSet = false;
+
+    document.addEventListener("DOMContentLoaded", function(event) {
+        document.getElementById("pkgList").innerHTML = listpkgInnerHTML;
+        pkgListSet = true;
+    });
+
+    window.onload = function setPkgList(){
+        /*
+            If DOMContentLoaded has not been fired, like for browser that don't support HTML5,
+            the package list is set when the whole page is loaded
+         */
+        if(!pkgListSet) {
+            document.getElementById("pkgList").innerHTML = listpkgInnerHTML;
+        }
+    }
+</script>
 <style type="text/css">
  div.announce {
    font-size:100%;
@@ -23,16 +72,19 @@
   "http://git.sagemath.org/">open-source</a>
   mathematics software system licensed under the GPL.
 It builds on top of many existing 
-open-source packages:
-<a href="http://numpy.scipy.org/">NumPy</a>, 
-<a href="http://www.scipy.org/">SciPy</a>, 
-<a href="http://matplotlib.sourceforge.net/">matplotlib</a>,
-<a href="http://www.sympy.org/">Sympy</a>, 
-<a href="http://maxima.sourceforge.net/">Maxima</a>, 
-<a href="http://www.gap-system.org/">GAP</a>, 
-<a href="http://www.flintlib.org/">FLINT</a>, 
-<a href="http://www.r-project.org/">R</a>
-<a href="./links-components.html">and many more</a>.
+open-source packages. Here is a selection updated randomly:
+<p id="pkgList" style="display:inline"></p>
+<noscript>
+  <a href="http://numpy.scipy.org/">NumPy</a>,
+  <a href="http://www.scipy.org/">SciPy</a>,
+  <a href="http://matplotlib.sourceforge.net/">matplotlib</a>,
+  <a href="http://www.sympy.org/">Sympy</a>,
+  <a href="http://maxima.sourceforge.net/">Maxima</a>,
+  <a href="http://www.gap-system.org/">GAP</a>,
+  <a href="http://www.flintlib.org/">FLINT</a>,
+  <a href="http://www.r-project.org/">R</a>
+</noscript>
+<a href="./links-components.html">but there are many more</a>.
 Access their combined power through a common, Python-based language
 or directly via interfaces or wrappers.
 {#
